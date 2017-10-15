@@ -15,18 +15,18 @@ var sPath = path.join(__dirname, '.');
 app.use(express.static(sPath));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-function fPlay(req, res){
+function fPlay(req, res) {
   var sFrom = req.body.From;
   var sAction = req.body.Body;
   var twiml = new twilio.twiml.MessagingResponse();
-  if(sAction.toLowerCase().search("yes") != -1){
+  if (sAction.toLowerCase().search("yes") != -1){
     twiml.message("Oh glory. Here it is. I got it for you. Do you throw it again?");
   }else if(sAction.toLowerCase().search("no") != -1){
     twiml.message("Oh well. Wait .... Over there is that a stick or a fire hydrant?");
     oConnections[sFrom].fCurState = fStickOrHydrant;
   }else{
     twiml.message("Wow! I've never seen you do " + sAction + " before. Wait .... Over there is that a stick or a fire hydrant?")
-    oConnections[sFrom].fCurState = fStickOrHydrant;    
+    oConnections[sFrom].fCurState = fStickOrHydrant;
   }
   res.writeHead(200, {'Content-Type': 'text/xml'});
   res.end(twiml.toString());
@@ -44,7 +44,7 @@ function fStick(req, res){
     oConnections[sFrom].fCurState = fPlay;
   }else{
     twiml.message("Wow! I've never done " + sAction + " before. Wait .... Over there is that a stick or a fire hydrant?")
-    oConnections[sFrom].fCurState = fStickOrHydrant;    
+    oConnections[sFrom].fCurState = fStickOrHydrant;
   }
   res.writeHead(200, {'Content-Type': 'text/xml'});
   res.end(twiml.toString());
@@ -57,7 +57,7 @@ function fStickOrHydrant(req, res){
   if(sAction.toLowerCase().search("stick") != -1){
     twiml.message("I love sticks.... Should I eat it or take it to my person so he will throw it?");
     oConnections[sFrom].fCurState = fStick;
-  }else if(sAction.toLowerCase().search("hydrant") != -1){  
+  }else if(sAction.toLowerCase().search("hydrant") != -1){
     twiml.message("Pee mail! How exciting. Wait .... Over there is that a stick or a fire hydrant?");
   }else {
     twiml.message("Wow! I've never seen " + sAction + " before. Wait .... Over there is that a stick or a fire hydrant?")
@@ -66,11 +66,17 @@ function fStickOrHydrant(req, res){
   res.end(twiml.toString());
 }
 
-function fBeginning(req, res){
+//Starting of the game
+function fBeginning(req, res)
+{
   var sFrom = req.body.From;
   oConnections[sFrom].fCurState = fStickOrHydrant;
   var twiml = new twilio.twiml.MessagingResponse();
-  twiml.message('Hi ... My name is Sheba. I am very enthusiastic about this game. Wait! Is that a stick or a fire hydrant?');
+  twiml.message('Welcome to the "The Cave" --> As you walk through the wooded forest, ' +
+  'you see the entrance to the Cave. You step closer to the entrance and a cold wind blows past your face and sends a cold shiver down your spine.' +
+  'When you get into the cave it suddenly goes dark but you can see a dim light of a lantern coming from the depths of the cave. ' +
+  'You hear a scream you turn to run out of the cave but you run straight in to a wall you are trapped and your only way out is to go deeper into the cave.' +
+  'You started to walk into the dark depths of the cave. You hear a scream, you stand your ground as something brushes past you. Do you want to Swing or dash to the lantern?');
   res.writeHead(200, {'Content-Type': 'text/xml'});
   res.end(twiml.toString());
 
